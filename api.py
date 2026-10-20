@@ -28,8 +28,9 @@ app = FastAPI(
 
 def _extract(url: str):
     """Run the extraction; normalise errors into HTTPException."""
+    settle = int(os.environ.get("FBDUMP_SETTLE", "22"))
     try:
-        return fbdump.run(url, out_md=None, as_json=False)
+        return fbdump.run(url, out_md=None, as_json=False, settle=settle)
     except SystemExit as e:          # fbdump.die() raises SystemExit
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:            # noqa: BLE001
